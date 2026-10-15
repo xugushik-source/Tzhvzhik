@@ -13,8 +13,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "tzhvzhik-local",
-      "database_id": "00000000-0000-4000-8000-000000000000"
+      "database_name": "tzhvzhik-db",
+      "database_id": "dec800fd-583a-4c35-beb2-5d73c691d14a"
     }
   ],
   "r2_buckets": [
