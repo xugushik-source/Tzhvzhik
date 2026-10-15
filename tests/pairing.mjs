@@ -1,0 +1,28 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+await import('../public/pairing-engine.js');
+const e=globalThis.PairingEngine,catalog=JSON.parse(fs.readFileSync('src/products.json'));let n=0;
+const check=(x,label)=>{assert.ok(x,label);n++};
+const recommend=(opts={},rows=catalog)=>e.recommend({catalog:rows,...opts});
+for(const p of catalog){const rows=recommend({lines:[{id:p.id,qty:1}],seeds:[p.id]});check(rows.length>0,p.id+' has complementary choices');check(!rows.some(r=>r.id===p.id),p.id+' excludes selected item');check(rows.every(r=>catalog.some(p=>p.id===r.id)),p.id+' uses real SKUs only')}
+check(recommend({seeds:['kebab']})[0].id==='lavash','Lula starts with bread');
+check(recommend({seeds:['lavash']})[0].id==='kebab','Bread suggests lula in reverse');
+check(recommend({seeds:['sauce']}).some(r=>e.meatIds.includes(r.id)),'Sauce suggests meat');
+check(recommend({seeds:['vegetables']}).some(r=>r.id==='chicken'),'Vegetables suggest chicken');
+check(!recommend({lines:[{id:'neck',qty:1},{id:'sauce',qty:1}],seeds:['lavash']}).some(r=>e.meatIds.includes(r.id)),'Sides in meat basket complete meal instead of adding another main');
+const wine=recommend({wine:'tsinandali',people:2});check(wine[0].id==='chicken','Fresh white suggests chicken');check(wine[0].qty===.6,'2 people have editable 600g main baseline');check(wine[0].upper===.8,'Weight tolerance preserved');check(wine[0].maximumCents===1440,'Max shown in integer cents');
+check(recommend({wine:'saperavi'})[0].id==='lamb','Structured red suggests lamb');
+check(e.winesFor('chicken').includes('tsinandali'),'Chicken recommends same white in reverse');check(e.winesFor('lamb').includes('saperavi'),'Lamb recommends same red in reverse');
+check(!recommend({seeds:['kebab']},catalog.map(p=>p.id==='lavash'?{...p,active:false}:p)).some(r=>r.id==='lavash'),'Inactive excluded');
+check(!recommend({seeds:['kebab']},catalog.map(p=>p.id==='lavash'?{...p,available:0}:p)).some(r=>r.id==='lavash'),'Sold-out excluded');
+check(!recommend({wine:'tsinandali',people:2},catalog.map(p=>p.id==='chicken'?{...p,available:.7}:p)).some(r=>r.id==='chicken'),'Not enough for +200g excluded');
+check(recommend({wine:'tsinandali',people:2},catalog.map(p=>p.id==='chicken'?{...p,available:.8}:p)).some(r=>r.id==='chicken'),'Exact max stock available');
+check(recommend({lines:catalog.map(p=>({id:p.id,qty:1}))}).length===0,'Complete basket has no duplicate offers');
+check(e.guests([{id:'vegetables',qty:3}])===2,'Vegetable kilos are not meat portions');check(e.guests([{id:'neck',qty:1.8}])===6,'Meat guest estimate');check(e.guests([{id:'lavash',qty:3}])===6,'Bread guest estimate');
+check(e.guests([],100)===20,'Guest bound');check(Number.isInteger(e.quantity('lavash',3))&&e.quantity('lavash',3)===2,'Whole bread pieces');check(e.quantity('sauce',6)===1,'One assumed 250g sauce pack for 6');
+check(e.quantity('vegetables',6)===.9,'Vegetable portion');check(e.quantity('lamb',6)===2.6,'Bone factor and 100g step');
+check(recommend({wine:'saperavi'}).some(r=>r.id==='cheese-aged'),'Red wine suggests orderable aged demo cheese');
+check(e.winesFor('cheese-blue').includes('dessert'),'Blue cheese pairs back to sweet white');
+check(recommend({seeds:['cheese-blue']})[0].id==='wine-dessert','Blue cheese recommends demo dessert wine SKU');
+check(e.quantity('wine-saperavi',20)===1,'Bottle quantity remains explicit one, never scales by guest count');
+check(recommend({seeds:['kebab']},catalog.map(p=>p.id==='lavash'?{...p,price:NaN}:p)).every(r=>Number.isFinite(r.maximumCents)),'Invalid price omitted');
+console.log(n+' bidirectional pairing checks passed.');
