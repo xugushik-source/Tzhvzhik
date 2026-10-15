@@ -4,7 +4,7 @@ packages:
 overrides:
   miniflare>sharp: 0.35.4
 
-onlyBuiltDependencies:
-  - esbuild
-  - unrs-resolver
-  - workerd
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
+  workerd: true
