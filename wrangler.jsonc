@@ -1,5 +1,6 @@
 {
   "name": "tzhvzhik-demo",
+  // Trigger Cloudflare production rebuild after branch selection.
   "main": "worker.mjs",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": [
