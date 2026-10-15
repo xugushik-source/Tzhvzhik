@@ -1,0 +1,45 @@
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {spawnSync} from 'node:child_process';
+import {backofficeAction,finance} from '../src/backoffice.mjs';
+import assert from 'node:assert/strict';
+import {Store,initial,handle} from '../src/commerce.mjs';
+import {flush,webhook} from '../src/telegram.mjs';
+import {syncGoogle,mirror} from '../src/google-sync.mjs';
+const old=globalThis.fetch;let sent=[],fail=false;globalThis.fetch=async(url,opts)=>{if(fail)throw Error('offline');sent.push({url,body:JSON.parse(opts.body||'{}')});return Response.json({ok:true,result:{message_id:10},sheets:[]})};
+const directory=fs.mkdtempSync(path.join(os.tmpdir(),'tzh-operations-')),dbPath=path.join(directory,'qa.sqlite');
+function sql(input){const r=spawnSync('python3',['tests/sqlite-bridge.py'],{input:JSON.stringify({path:dbPath,...input}),encoding:'utf8'});if(r.status)throw Error(r.stderr);return JSON.parse(r.stdout)}
+sql({migration:fs.readFileSync('migrations/0001_store_state.sql','utf8')});
+const env={RECOVERY_SECRET:'test-only',TELEGRAM_BOT_TOKEN:'test-only',TELEGRAM_WEBHOOK_SECRET:'test-secret',DB:{prepare(sqlText){let params=[];return {bind(...a){params=a;return this},async first(){return sql({sql:sqlText,params,op:'first'})},async run(){return sql({sql:sqlText,params,op:'run'})}}}}};
+
+const st=new Store(env),owner={id:'owner',role:'OWNER'},a={id:'s1',role:'SUPPLIER'},b={id:'s2',role:'SUPPLIER'},driver={id:'d1',role:'DRIVER'};let checks=0;const check=(v,m)=>{assert.ok(v,m);checks++};const cmd=(action,extra={},u=owner)=>st.mutate(s=>st.action(s,{id:order.id,action,command_id:crypto.randomUUID(),...extra},u));
+await st.mutate(s=>{s.grants=[{user_id:'s1',role:'SUPPLIER'},{user_id:'s2',role:'SUPPLIER'},{user_id:'d1',role:'DRIVER'},{user_id:'d2',role:'DRIVER'}];s.catalog.find(p=>p.id==='beef').supplier_id='s1';s.catalog.find(p=>p.id==='neck').supplier_id='s2';s.catalog.find(p=>p.id==='chicken').supplier_id='s2';s.tgBindings=[{telegram_id:'1',chat_id:'1',user_id:'owner',role:'OWNER'}];s.tgGroups=[{chat_id:'-1',role:'SUPPLIER',supplier_id:'s1'},{chat_id:'-2',role:'SUPPLIER',supplier_id:'s2'},{chat_id:'-3',role:'DRIVER_GROUP'}]});
+const order=await st.mutate(async s=>{const q=st.quote(s,{items:[{id:'beef',qty:1},{id:'neck',qty:1}],method:'cash',region:'akhalkalaki'});return st.order(s,{quote_id:q.id,idem:crypto.randomUUID(),customer:{name:'DEMO',phone:'DEMO',address:'DEMO'}})});
+await st.mutate(s=>{s.tgBindings.push({telegram_id:'11',chat_id:'11',user_id:'d1',role:'DRIVER'},{telegram_id:'12',chat_id:'12',user_id:'d2',role:'DRIVER'})});
+const cb={update_id:123,callback_query:{id:'test-group-callback-123',from:{id:11},message:{chat:{id:-3,type:'supergroup'}},data:'a|claim|'+order.id+'|0'}};
+const webhookReq=b=>new Request('https://test/api/telegram/webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'test-secret','Content-Type':'application/json'},body:JSON.stringify(b)});
+await webhook(webhookReq(cb),env);let before=(await st.read()).state.orders[order.id].events.length;await webhook(webhookReq(cb),env);check((await st.read()).state.orders[order.id].events.length===before,'Repeated group callback does not repeat action');check((await st.read()).state.orders[order.id].driver_id==='d1','Real webhook path handles group claim');
+await assert.rejects(cmd('claim',{}, {id:'d2',role:'DRIVER'}),/NOT_ASSIGNED/);checks++;
+await assert.rejects(cmd('supplier_prepare',{},a),/INVALID_TRANSITION/);checks++;
+await cmd('call_confirm',{},driver);await cmd('supplier_available',{},a);await cmd('supplier_missing',{reason:'DEMO отсутствует'},b);
+await cmd('propose_replacement',{line_index:1,product_id:'chicken',reason:'DEMO замена'},b);
+let state=(await st.read()).state;check(state.orders[order.id].items[1].id==='neck','Proposal does not silently change order');
+let proposal=state.orders[order.id].replacements[0];
+const r=await handle(new Request('https://test/api/accept-replacement',{method:'POST',headers:{'X-JM-CSRF':'1','Content-Type':'application/json'},body:JSON.stringify({id:order.id,code:order.code,replacement_id:proposal.id,approved:true,command_id:crypto.randomUUID()})}),env);check(r.status===200,'Customer approves replacement with recovery capability');
+state=(await st.read()).state;check(state.orders[order.id].items[1].id==='chicken'&&state.orders[order.id].original_items[1].id==='neck','Original order preserved');
+await cmd('supplier_available',{},a);await cmd('supplier_prepare',{},a);await cmd('supplier_available',{},b);await cmd('supplier_prepare',{},b);
+await assert.rejects(cmd('supplier_ready',{},a),/CUSTOMER_APPROVAL_REQUIRED/);checks++;
+await cmd('weigh',{version:1,entries:[{line_index:0,grams:1000},{line_index:1,grams:1000}]});await st.mutate(s=>st.accept(s,{id:order.id,code:order.code,version:2,command_id:crypto.randomUUID()}));
+await cmd('supplier_ready',{},a);await assert.rejects(cmd('pickup',{},driver),/SUPPLIERS_NOT_READY/);checks++;
+await assert.rejects(cmd('supplier_ready',{}, {id:'outsider',role:'SUPPLIER'}),/NOT_ASSIGNED/);checks++;
+await cmd('supplier_ready',{},b);for(const action of ['pickup','depart','deliver','collect_cash'])await cmd(action,{},driver);
+state=(await st.read()).state;check(state.orders[order.id].status==='DELIVERED'&&state.orders[order.id].payment==='PAID','Delivery and separate cash recording');
+check(st.project(state.orders[order.id],a).items.every(l=>l.id==='beef'),'Supplier projection isolates positions');
+
+sent=[];await st.mutate(s=>{s.tgDelivery={};for(const e of s.outbox)e.sent=[]});await flush(st);check(sent.filter(x=>x.url.endsWith('/sendMessage')).length===5,'One card each for owner and three groups');await flush(st);check(sent.length===5,'Repeated flush does not duplicate');
+await st.mutate(s=>st.event(s,s.orders[order.id],'TEST_UPDATE','owner'));await flush(st);check(sent.filter(x=>x.url.endsWith('/editMessageText')).length===5,'Existing cards updated');
+fail=true;await st.mutate(s=>st.event(s,s.orders[order.id],'TEST_FAILURE','owner'));await flush(st);state=(await st.read()).state;check(Object.values(state.tgDelivery).every(d=>d.error),'Failures retained for retry');check(state.orders[order.id].status==='DELIVERED','External failure cannot lose order');
+check(Object.keys(mirror(state)).length===12,'Twelve mirror worksheets');fail=false;env.GOOGLE_ACCESS_TOKEN='test-only';env.GOOGLE_SPREADSHEET_ID='test-only';await syncGoogle(st);check((await st.read()).state.google_sync.status==='SYNCED','Mock Google synchronization');
+const writes=sent.filter(x=>x.url.includes('/values:batchUpdate'));check(writes[0].body.valueInputOption==='RAW','User values never interpreted as formulas');await syncGoogle(st);check(JSON.stringify(writes[0].body)===JSON.stringify(sent.filter(x=>x.url.includes('/values:batchUpdate'))[1].body),'Retry writes same stable ranges');
+const bo=(action,extra={})=>st.mutate(s=>backofficeAction(st,s,{action,command_id:crypto.randomUUID(),reason:'DEMO QA',...extra},owner));
+await bo('expense',{amount_cents:250,category:'Упаковка'});await bo('inventory',{product_id:'beef',type:'RECEIPT',quantity:1000,cost_cents:1000});let f=finance((await st.read()).state);check(f.expenses_cents===250&&f.procurement_cents===1000,'Procurement and expenses separate from COGS');const due=f.supplier_debts.find(r=>r.supplier_id==='s1').amount_cents;await assert.rejects(bo('supplier_payment',{supplier_id:'s1',amount_cents:due+1}),/EXCEEDS_DEBT/);checks++;await bo('supplier_payment',{supplier_id:'s1',amount_cents:due});check(finance((await st.read()).state).supplier_debts.find(r=>r.supplier_id==='s1').amount_cents===0,'Supplier settlement reduces debt');await bo('cash_remittance',{driver_id:'d1',amount_cents:state.orders[order.id].actual_snapshot.gel});check(finance((await st.read()).state).courier_cash[0].amount_cents===0,'Courier cash handover reconciles');
+const command={action:'expense',amount_cents:100,reason:'DEMO repeat',command_id:crypto.randomUUID()};await st.mutate(s=>backofficeAction(st,s,command,owner));await st.mutate(s=>backofficeAction(st,s,command,owner));check((await st.read()).state.expenses.length===2,'Expense command retry does not duplicate');
+globalThis.fetch=old;fs.rmSync(directory,{recursive:true,force:true});console.log(checks+' operations checks passed; real SQLite D1 adapter, external transports mocked. No live integrations or browser E2E.');

@@ -4,7 +4,7 @@ import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
 import {handle,Store,price,validateFile,initial,upgradeCatalog} from '../src/commerce.mjs';
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),'tzhvzhik-qa-')),dbPath=path.join(dir,'test.db');
 function sql(input){const r=spawnSync('python3',['tests/sqlite-bridge.py'],{input:JSON.stringify({path:dbPath,...input}),encoding:'utf8'});if(r.status)throw new Error(r.stderr);return JSON.parse(r.stdout)}
-sql({migration:fs.readFileSync('drizzle/0000_left_colossus.sql','utf8')});
+sql({migration:fs.readFileSync('migrations/0001_store_state.sql','utf8')});
 const db={prepare(sqlText){let params=[];return {bind(...a){params=a;return this},async first(){return sql({sql:sqlText,params,op:'first'})},async run(){return sql({sql:sqlText,params,op:'run'})}}}};
 const objects=new Map();let putFail=false;
 const env={DB:db,BUCKET:{async put(k,a){if(putFail)throw new Error('storage failure');objects.set(k,a)},async get(k){const a=objects.get(k);return a?{body:a}:null}},RECOVERY_SECRET:'unit-test-only-secret',OWNER_EMAILS:'owner@example.test'};

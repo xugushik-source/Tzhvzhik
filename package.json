@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "wrangler dev --local --port 5173",
     "build": "wrangler deploy --dry-run --outdir dist",
-    "test": "node tests/hosted.mjs && node tests/telegram.mjs && node tests/pairing.mjs && node tests/meal.mjs && node tests/client-hosted.mjs"
+    "test": "node tests/hosted.mjs && node tests/telegram.mjs && node tests/pairing.mjs && node tests/meal.mjs && node tests/client-hosted.mjs && node tests/operations.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
