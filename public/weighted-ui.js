@@ -29,7 +29,7 @@ window.adminSheet=async function(){stopWeightPolling();try{const u=await api('/a
 let weightPoll=null,weightPollBusy=false;
 function stopWeightPolling(){if(weightPoll){clearInterval(weightPoll);weightPoll=null}}
 const originalOrders=ordersSheet;
-window.ordersSheet=async function(){stopWeightPolling();await originalOrders();weightPoll=setInterval(async()=>{if(weightPollBusy||!$('overlay').classList.contains('open'))return;weightPollBusy=true;try{let changed=false;const data=await api('/api/order-statuses',{orders:recent});for(const next of data.orders){const old=state.orders.find(x=>x.id===next.id);if(old&&(old.status!==next.status||old.version!==next.version||old.payment!==next.payment))changed=true}if(changed&&document.activeElement?.tagName!=='INPUT')await ordersSheet()}catch{}finally{weightPollBusy=false}},2000)};
+window.ordersSheet=async function(){stopWeightPolling();await originalOrders();weightPoll=setInterval(async()=>{if(weightPollBusy||!$('overlay').classList.contains('open'))return;weightPollBusy=true;try{let changed=false;const data=await api('/api/order-statuses',{orders:recent});for(const next of data.orders){const old=state.orders.find(x=>x.id===next.id);if(old&&(old.status!==next.status||old.version!==next.version||old.payment!==next.payment||JSON.stringify(old.replacements)!==JSON.stringify(next.replacements)))changed=true}if(changed&&document.activeElement?.tagName!=='INPUT')await ordersSheet()}catch{}finally{weightPollBusy=false}},2000)};
 const originalClose=closeSheet;window.closeSheet=function(){stopWeightPolling();originalClose()};
 const previousRemember=remember;window.remember=function(o){const ref=recent.find(x=>x.id===o.id);previousRemember({...o,code:o.code||ref?.code})};
 function maxBasketCents(){return state.cart.reduce((sum,x)=>sum+Math.round(pget(x.id).price*100*(x.qty+(pget(x.id).unit==='kg'?.2:0))),0)}
@@ -40,3 +40,8 @@ window.repeatServerOrder=async function(id){const o=state.orders.find(x=>x.id===
 updateCart();
 
 const originalCheckout=checkoutSheet;window.checkoutSheet=async function(){const cart=JSON.stringify(state.cart);for(const [id,submitted] of Object.entries(requestCarts)){if(cart===submitted){const ref=recent.find(x=>x.id===id);if(ref){try{const o=await api('/api/order?id='+encodeURIComponent(id)+'&code='+encodeURIComponent(ref.code));if(o.status!=='CANCELLED'){toast(ww('pending'));return ordersSheet()}delete requestCarts[id];saveRequestCarts()}catch{}}}}return originalCheckout()};
+
+// Replacement proposals remain pending until the buyer explicitly agrees.
+const replacementCardBase=serverOrderCard;
+window.serverOrderCard=function(o,admin=false){let html=replacementCardBase(o,admin);if(!admin&&recent.some(r=>r.id===o.id))for(const r of o.replacements||[]){if(r.status==='PENDING')html+=`<article class="order"><h3>Предложена замена</h3><p>${esc(name(pget(o.items[r.line_index].id)))} → ${esc(name(pget(r.product_id)))}</p><p>${esc(r.reason)}</p><p>После согласия товар будет заново взвешен. Точную сумму потребуется подтвердить отдельно.</p><button onclick="reviewReplacement('${o.id}','${r.id}',true)">Согласен на замену</button><button onclick="reviewReplacement('${o.id}','${r.id}',false)">Отклонить</button></article>`}return html};
+async function reviewReplacement(id,replacement_id,approved){const ref=recent.find(r=>r.id===id);try{await api('/api/accept-replacement',{...ref,replacement_id,approved,command_id:crypto.randomUUID()});await ordersSheet()}catch(e){toast(err(e))}}

@@ -54,3 +54,6 @@ meal-ui.js syntax and 21 client DOM-stub checks passed. Unicode diagonal arrow s
 16 Telegram checks passed with mocked fetch. Mixed order completes its input through /count for bottle/pack and /weigh for meat; wrong units and fractional counts rejected. Found and corrected too-short idempotency keys for small update IDs while extending the command path. No real Telegram calls made.
 84 pairing checks, 90 meal-planner checks and 44 hosted DOM-stub integration checks passed. Covers orderable DEMO wine/cheese, reciprocal cheese→sweet wine, fixed one-bottle optional default, explicit optional set components and totals, empty/undo basket preservation. Total290; intermediate suite messages do not add to this total.
 Source files inspected/checked for syntax and asset references. New product imagery is explicitly a typographic placeholder, not generated or licensed photography. Browser visual/E2E remains unavailable without control-browser. No real payment, delivery or external messages were performed by tests.
+
+## Операционная ветка · 15.10.2026
+Актуальные результаты и ограничения: `docs/IMPLEMENTATION_STATUS_RU.md`. Новый набор operations — 26 проверок с реальным SQLite; внешние транспорты имитируются. Общий итог 316. Не является подтверждением живого 24-шагового Telegram/Google E2E или готовности всей системы.
