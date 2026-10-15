@@ -1,0 +1,149 @@
+/* TZHVZHIK · restrained editorial layout, appetizing colour, explicit control contrast. */
+:root {
+  --paper:#f6f0e6; --ink:#20291f; --green:#263c2d; --red:#753b2c;
+  --muted:#625e52; --line:#d4c9b7;
+}
+body { background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased; }
+.section { padding:100px 6vw; }
+h1,h2,h3 { text-wrap:balance; }
+h2 { font-weight:400; letter-spacing:-.045em; line-height:1.06; }
+.section-title { margin-bottom:48px; }
+.section-title h2 { font-size:clamp(42px,4.8vw,72px); }
+.section-title p { font-size:14px; line-height:1.75; max-width:330px; }
+.eyebrow { font-size:10px; letter-spacing:.18em; color:#6d614b; }
+.header { background:#f6f0e6f5; }
+.hero-media img { filter:brightness(.98) saturate(1.08) contrast(1.025); }
+.hero-media:after { box-shadow:none; }
+.hero h1 { line-height:1.02; }
+.hero-copy p { line-height:1.8; color:#625e52; }
+.hero-note { line-height:1.6; }
+/* One photograph per product, edge to edge. No small tiled mosaics or grey mats. */
+.grid { gap:42px 24px; }
+.product { padding-bottom:0; }
+.media { aspect-ratio:1/1; background:#e9dfcf; }
+.media img { display:block; padding:0; object-fit:cover; filter:brightness(1.04) saturate(1.06) contrast(1.02); }
+.media:hover img { transform:scale(1.025); filter:brightness(1.07) saturate(1.07); }
+.media[data-sku="neck"] img { object-position:50% 58%!important; filter:brightness(1.04) saturate(1.02); }
+.media[data-sku="beef"] img { object-position:50% 66%!important; }
+.media[data-sku="chicken"] img { object-position:50% 55%!important; }
+.media[data-sku="lamb"] img { transform:none; filter:brightness(1.015) saturate(.97); object-position:center!important; }
+.media[data-sku="lamb"]:hover img { transform:scale(1.025); }
+.media[data-sku="kebab"] img { object-position:20% 65%!important; }
+.media[data-sku="greens"] img { filter:brightness(1.7) saturate(1.12) contrast(1.04); }
+.media[data-sku="sauce"] img { object-position:50% 60%!important; }
+.media[data-sku="cutlets"] img { filter:none; }
+.media .ph { color:#fff9ef; background:#19251cbd; font-size:8px; padding:5px 7px; letter-spacing:.08em; bottom:10px; left:10px; }
+.media[data-sku="cutlets"] .ph { background:none; color:#e6d9bf; bottom:20%; }
+.product-meta { color:#6b624f; font-size:9px; margin-top:19px; }
+.product h3 { font-size:24px; line-height:1.2; margin:10px 0 18px; letter-spacing:-.02em; }
+.product-detail { font-size:12px; line-height:1.6; color:var(--muted); }
+.product-bottom { gap:12px; font-size:14px; }
+/* Six occasions read as a menu; composition belongs in typography, not a contact sheet. */
+.bundles { background:#eae2d3; }
+.bundle-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 64px; }
+.collection-card { display:grid; grid-template-columns:58px minmax(0,1fr); gap:20px; padding:36px 0; border-top:1px solid #bcb098; }
+.collection-index { font:italic 38px/1 Georgia,serif; color:#8f795b; padding-top:25px; }
+.collection-copy h3 { font:400 clamp(26px,2.6vw,38px)/1.14 Georgia,serif; letter-spacing:-.035em; margin:12px 0 18px; }
+.collection-copy>p { font-size:12px; line-height:1.9; color:#5f594d; margin:0; max-width:430px; }
+.collection-copy>p span { color:#273c2d; white-space:nowrap; font-weight:600; }
+.collection-action { display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; padding:22px 0 0; background:transparent; color:#263c2d; text-align:left; font-size:13px; }
+.collection-action:hover .composition-note { padding:0 0 24px; margin-bottom:25px; border-bottom:1px solid var(--line); }
+.composition-note p { font:21px/1.55 Georgia,serif; letter-spacing:-.015em; margin:12px 0 0; color:#263c2d; }
+/* A single green still life gives the page a pause between meat and process. */
+.table-accents { display:grid; grid-template-columns:1fr 1fr; gap:0; padding:0; background:#efe6d7; }
+.accent-portrait { margin:0; min-height:660px; background:#17261c; overflow:hidden; }
+.accent-portrait img { width:100%; height:100%; display:block; object-fit:cover; filter:brightness(1.72) saturate(1.12) contrast(1.04); }
+.accent-content { padding:80px 6vw; align-self:center; }
+.accent-content h2 { font-size:clamp(40px,4.3vw,64px); margin:20px 0; }
+.accent-intro { font-size:14px; line-height:1.8; color:#625c50; margin-bottom:30px; }
+.accent-choice { display:flex; align-items:center; justify-content:space-between; gap:25px; width:100%; padding:25px 0; border-top:1px solid #cabcaa; background:transparent; color:#253b2c; text-align:left; }
+.accent-choice>span:first-child { display:flex; flex-direction:column; gap:9px; }
+.accent-choice strong { font:28px/1.15 Georgia,serif; font-weight:400; }
+.accent-choice>span>span { font-size:12px; line-height:1.65; color:#625c50; }
+.accent-choice:hover strong { color:#753b2c; }
+.process-figure { margin:0 0 35px; }
+.process-figure .story-photo { display:block; width:100%; height:auto; aspect-ratio:3/2; object-fit:cover; filter:brightness(1.3) saturate(1.08); margin:0; }
+.process-figure figcaption { margin-top:10px; font-size:10px; line-height:1.5; color:#625e52; }
+.story { align-items:center; }
+.story h2 { font-size:clamp(36px,3.8vw,55px); }
+.story ol { border-top:1px solid var(--line); }
+.faq { max-width:1000px; margin:auto; }
+.faq h2 { margin-bottom:38px; }
+.faq details { padding:23px 0; }
+.faq summary { line-height:1.5; color:#263c2d; }
+/* All controls own their foreground and background, including nested order controls. */
+button { color:inherit; }
+.cta,.drawer .cta,.cartbtn,.order button { color:#fff9ed; background:#263c2d; border:1px solid #263c2d; }
+.cta:hover,.drawer .cta:hover,.cartbtn:hover { color:#fff9ed; background:#753b2c; border-color:#753b2c; }
+.plain,.chip,.add,.close,.quantity button,.order button.plain,.order button.chip,.order .quantity button { color:#263c2d; background:transparent; }
+.chip.active,.order .chip.active { color:#fff9ed; background:#263c2d; }
+.add,.quantity button { border:1px solid #8a806d; min-width:44px; min-height:44px; }
+.add:hover,.quantity button:hover { background:#263c2d; color:#fff9ed; }
+.quantity button { font-size:24px; }
+.drawer { background:#f6f0e6; }
+.drawer-head { background:#f6f0e6; }
+.drawer input,.drawer select { color:#20291f; background:#fffbf4; color-scheme:light; border:1px solid #a99e8a; font-size:16px; border-radius:0; min-height:50px; }
+.drawer select { appearance:none; padding-right:40px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='m2 3 6 6 6-6' fill='none' stroke='%23263c2d' stroke-width='2'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 15px center; }
+.meal-counts { gap:20px; }
+.count-control { display:grid; grid-template-columns:48px minmax(40px,1fr) 48px; border:1px solid #a99e8a; background:#fffbf4; }
+.count-control button { display:flex; align-items:center; justify-content:center; height:52px; min-width:48px; padding:0; color:#fff9ed; background:#263c2d; border:0; font:26px/1 Arial,sans-serif; touch-action:manipulation; }
+.count-control button:hover { background:#753b2c; }
+.drawer .count-control input { border:0; padding:8px 2px; width:100%; text-align:center; font:500 21px/1.2 Arial,sans-serif; height:52px; min-height:52px; appearance:textfield; -moz-appearance:textfield; }
+.count-control input::-webkit-inner-spin-button,.count-control input::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+.drawer .meal-check input { accent-color:#263c2d; min-height:20px; }
+.meal-text .chip { background:#263c2d; color:#fff9ed; border:1px solid #263c2d; min-width:52px; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid #a65c28; outline-offset:4px; }
+button:disabled { opacity:.5; cursor:default; }
+.sheet-photo { height:auto; max-height:300px; object-fit:contain; background:transparent; padding:0; filter:brightness(1.05) saturate(1.05); }
+.pair-card img { object-fit:cover; filter:brightness(1.08) saturate(1.05); }
+.small { color:#625e52; line-height:1.6; }
+@media(max-width:1050px) {
+  .section { padding:75px 5vw; }
+  .bundle-grid { gap:0 35px; }
+  .collection-card { grid-template-columns:38px minmax(0,1fr); gap:12px; }
+  .collection-index { font-size:29px; }
+  .accent-content { padding:50px 5vw; }
+  .accent-portrait { min-height:580px; }
+  .table-accents { padding:0; }
+}
+@media(max-width:680px) {
+  .section { padding:58px 5vw; }
+  .section-title { margin-bottom:32px; }
+  .section-title h2 { font-size:43px; }
+  .grid { gap:32px 15px; }
+  .product h3 { font-size:20px; min-height:48px; }
+  .product-bottom { font-size:12px; }
+  .media { aspect-ratio:4/5; }
+  .media .ph { font-size:7px; padding:4px 5px; bottom:7px; left:7px; }
+  .bundle-grid { grid-template-columns:1fr; }
+  .collection-card { grid-template-columns:42px minmax(0,1fr); gap:15px; padding:30px 0; }
+  .collection-copy h3 { font-size:32px; }
+  .collection-copy>p { font-size:12px; }
+  .table-accents { padding:0; grid-template-columns:1fr; }
+  .accent-portrait { min-height:0; height:340px; }
+  .accent-content { padding:45px 6vw 55px; }
+  .accent-content h2 { font-size:45px; }
+  .accent-choice { padding:23px 0; }
+  .accent-choice strong { font-size:26px; }
+  .composition-note p { font-size:19px; }
+  .meal-counts { gap:12px; }
+  .count-control { grid-template-columns:44px minmax(24px,1fr) 44px; }
+  .count-control button { min-width:44px; height:50px; }
+  .drawer .count-control input { height:50px; min-height:50px; }
+  .drawer { padding:24px 20px; }
+  .process-figure .story-photo { height:auto; }
+  .story h2 { font-size:38px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .media img { transition:none; transform:none!important; }
+}
+
+/* User-selected raw cutlets and whole skinless chicken breast. */
+.media[data-sku="cutlets"] .ph{bottom:10px;left:10px;background:#19251cbd;color:#fff9ef}.media[data-sku="cutlets"] img{filter:none;object-position:center!important}.media[data-sku="chicken"] img{object-position:center!important;filter:none;background:#fff}.sheet-photo[src*="provided-v7"]{filter:none}
+
+/* Text actions replace ornamental direction arrows. */
+.collection-action{display:inline-block;width:auto;min-height:44px;padding:14px 0 9px;margin-top:15px;border-bottom:1px solid #7c846f;font-size:13px;letter-spacing:.02em}.collection-action:hover{color:#753b2c;border-color:#753b2c}.accent-choice{justify-content:flex-start}.cta{gap:16px}
+/* Orderable suggestions stay distinct from reference-only wine and cheese. */
+.pair-offer{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:23px 0;border-bottom:1px solid var(--line)}.pair-offer strong{font:25px/1.2 Georgia,serif}.pair-offer p{font-size:13px;line-height:1.65;color:var(--muted);margin:10px 0}.pair-offer .chip{flex:0 0 auto;white-space:normal;max-width:160px;min-height:44px}.pairings>input{max-width:100px}.pair-guide{margin:22px 0 0;padding-left:0;text-decoration:underline;text-underline-offset:5px}.wine-advice>summary{font:23px/1.3 Georgia,serif;cursor:pointer;color:var(--green)}.wine-advice .reference-label{font-size:12px;opacity:1;color:#6f4933;line-height:1.6}.wine-reference .plain{display:block;margin-top:20px;padding-left:0;text-decoration:underline;text-underline-offset:5px;text-align:left;line-height:1.6}.cheese-reference{padding:25px 0;border-top:1px solid var(--line);margin-top:30px}.cheese-reference p{font-size:14px;line-height:1.7}.cart-tools{display:flex;justify-content:flex-end;margin:0 0 22px}.clear-cart{min-height:44px;padding:10px 0;color:#753b2c;background:transparent;border-bottom:1px solid #b6927b;font-size:13px}.pairing-entry{margin-top:30px;padding:14px 0;border-bottom:1px solid var(--green)}
+@media(max-width:680px){.pair-offer{gap:15px;flex-wrap:wrap}.pair-offer>div{flex:1 1 200px}.pair-offer strong{font-size:23px}.pair-offer .chip{padding:11px 16px}.cart-tools{margin-bottom:12px}}
+.demo-product-action{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:20px 0}.demo-product-action>strong{font-size:14px}.demo-product-action .plain{margin:0;padding:12px 0}.media[data-sku^="wine-"] img,.media[data-sku^="cheese-"] img{filter:none;object-fit:contain}.media[data-sku^="wine-"] .ph,.media[data-sku^="cheese-"] .ph{background:none;color:#fff4df;font-size:8px;bottom:16px}.filters{flex-wrap:wrap;row-gap:10px}

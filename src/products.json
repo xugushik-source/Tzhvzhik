@@ -1,0 +1,230 @@
+[
+  {
+    "id": "neck",
+    "names": [
+      "Свиная шея",
+      "ღორის კისერი",
+      "Խոզի վիզ"
+    ],
+    "cat": "pork",
+    "price": 28,
+    "unit": "kg",
+    "symbol": "01",
+    "prep": true
+  },
+  {
+    "id": "beef",
+    "names": [
+      "Говядина для хашламы",
+      "ხორცი ხაშლამისთვის",
+      "Տավարի միս խաշլամայի համար"
+    ],
+    "cat": "beef",
+    "price": 36,
+    "unit": "kg",
+    "symbol": "02",
+    "prep": true
+  },
+  {
+    "id": "lamb",
+    "names": [
+      "Бараньи рёбра",
+      "ცხვრის ნეკნები",
+      "Գառան կողեր"
+    ],
+    "cat": "lamb",
+    "price": 34,
+    "unit": "kg",
+    "symbol": "03",
+    "prep": true
+  },
+  {
+    "id": "chicken",
+    "names": [
+      "Куриное филе",
+      "ქათმის ფილე",
+      "Հավի փափկամիս"
+    ],
+    "cat": "chicken",
+    "price": 18,
+    "unit": "kg",
+    "symbol": "04",
+    "prep": true
+  },
+  {
+    "id": "kebab",
+    "names": [
+      "Люля-кебаб",
+      "ლულა ქაბაბი",
+      "Լյուլա քաբաբ"
+    ],
+    "cat": "ready",
+    "price": 26,
+    "unit": "kg",
+    "symbol": "05"
+  },
+  {
+    "id": "cutlets",
+    "names": [
+      "Домашние котлеты",
+      "სახლური კატლეტები",
+      "Տնական կոտլետներ"
+    ],
+    "cat": "ready",
+    "price": 24,
+    "unit": "kg",
+    "symbol": "06"
+  },
+  {
+    "id": "sauce",
+    "names": [
+      "Ткемали",
+      "ტყემალი",
+      "Տղեմալի"
+    ],
+    "cat": "sides",
+    "price": 6,
+    "unit": "piece",
+    "symbol": "07"
+  },
+  {
+    "id": "lavash",
+    "names": [
+      "Лаваш",
+      "ლავაში",
+      "Լավաշ"
+    ],
+    "cat": "sides",
+    "price": 3,
+    "unit": "piece",
+    "symbol": "08"
+  },
+  {
+    "id": "vegetables",
+    "names": [
+      "Овощи для мангала",
+      "ბოსტნეული მაყალისთვის",
+      "Բանջարեղեն գրիլի համար"
+    ],
+    "cat": "sides",
+    "price": 6,
+    "unit": "kg",
+    "symbol": "09"
+  },
+  {
+    "id": "greens",
+    "names": [
+      "Свежая зелень · пучок",
+      "ახალი მწვანილი · კონა",
+      "Թարմ կանաչի · կապ"
+    ],
+    "cat": "sides",
+    "price": 2,
+    "unit": "piece",
+    "symbol": "10"
+  },
+  {
+    "id": "wine-saperavi",
+    "names": [
+      "MARANI Saperavi · 0,75 л",
+      "MARANI Saperavi · 0,75 ლ",
+      "MARANI Saperavi · 0,75 լ"
+    ],
+    "cat": "wine",
+    "price": 30,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  },
+  {
+    "id": "wine-areni",
+    "names": [
+      "TAKAR Red · Areni · 0,75 л",
+      "TAKAR Red · Areni · 0,75 ლ",
+      "TAKAR Red · Areni · 0,75 լ"
+    ],
+    "cat": "wine",
+    "price": 34,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  },
+  {
+    "id": "wine-tsinandali",
+    "names": [
+      "MARANI Tsinandali · 0,75 л",
+      "MARANI Tsinandali · 0,75 ლ",
+      "MARANI Tsinandali · 0,75 լ"
+    ],
+    "cat": "wine",
+    "price": 24,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  },
+  {
+    "id": "wine-voski",
+    "names": [
+      "ZORAH Voski · 0,75 л",
+      "ZORAH Voski · 0,75 ლ",
+      "ZORAH Voski · 0,75 լ"
+    ],
+    "cat": "wine",
+    "price": 46,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  },
+  {
+    "id": "cheese-fresh",
+    "names": [
+      "Свежий мягкий сыр · 200 г",
+      "ახალი რბილი ყველი · 200 გ",
+      "Թարմ փափուկ պանիր · 200 գ"
+    ],
+    "cat": "cheese",
+    "price": 9,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  },
+  {
+    "id": "cheese-aged",
+    "names": [
+      "Выдержанный сыр · 200 г",
+      "დაძველებული ყველი · 200 გ",
+      "Հասունացած պանիր · 200 գ"
+    ],
+    "cat": "cheese",
+    "price": 14,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  },
+  {
+    "id": "cheese-blue",
+    "names": [
+      "Сыр с голубой плесенью · 150 г",
+      "ლურჯი ობის ყველი · 150 გ",
+      "Կապույտ բորբոսով պանիր · 150 գ"
+    ],
+    "cat": "cheese",
+    "price": 16,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  },
+  {
+    "id": "wine-dessert",
+    "names": [
+      "Белое десертное · DEMO · 0,75 л",
+      "სადესერტო თეთრი · DEMO · 0,75 ლ",
+      "Աղանդերային սպիտակ · DEMO · 0,75 լ"
+    ],
+    "cat": "wine",
+    "price": 28,
+    "unit": "piece",
+    "demo_only": true,
+    "symbol": "DEMO"
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "name": "tzhvzhik-demo",
+  // Trigger Cloudflare production rebuild after branch selection.
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tzhvzhik-db",
+      "database_id": "dec800fd-583a-4c35-beb2-5d73c691d14a"
+    }
+  ]
+}

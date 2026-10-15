@@ -1,0 +1,3 @@
+# TZHVZHIK
+
+Read MEAT_STORE_CODEX_TZ.md, docs/PLAN.md, docs/PHOTO_AUDIT.md and docs/TEST_REPORT.md. Preserve weighted orders, late payment and private receipt review. No credentials, runtime data, real payments, real alcohol sales, paid services or campaigns. DEMO wine/cheese and publication of the existing Site are authorized. Work in a feature branch. Do not restore internal Sites/connector-preview infrastructure removed during GitHub export; independent runtime uses worker.mjs and wrangler.jsonc. Do not trust incoming oai-authenticated headers outside Sites. Product images must match the raw product and have documented provenance. Run pnpm test; do not claim browser E2E from DOM stubs.
