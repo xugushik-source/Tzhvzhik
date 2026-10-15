@@ -16,11 +16,5 @@
       "database_name": "tzhvzhik-db",
       "database_id": "dec800fd-583a-4c35-beb2-5d73c691d14a"
     }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "BUCKET",
-      "bucket_name": "tzhvzhik-local"
-    }
   ]
 }
